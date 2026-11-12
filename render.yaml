@@ -1,0 +1,29 @@
+# Render.com "Blueprint" - deploys the website with a PERSISTENT DISK so that data survives restarts and updates.
+# IMPORTANT: Render only offers persistent disks on PAID instance types (Starter or higher). The free plan has no
+# disk and would lose the database every time it restarts - do not use the free plan for real school data.
+services:
+  - type: web
+    name: motilal-school-events
+    runtime: python
+    plan: starter
+    region: singapore            # closest to India; change if you prefer
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+    healthCheckPath: /_stcore/health
+    autoDeploy: true
+    numInstances: 1              # SQLite must run on ONE instance (a disk can only be attached to one)
+    disk:
+      name: school-data
+      mountPath: /var/data       # everything below is stored here and kept across restarts / redeploys
+      sizeGB: 5
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: MSES_STORAGE_ROOT   # database, uploads, certificates, backups, logs, logo all go to the disk
+        value: /var/data
+      - key: MSES_TIMEZONE
+        value: Asia/Kolkata
+      - key: MSES_SETUP_CODE     # you type this once when creating the first administrator
+        sync: false
+      - key: MSES_PUBLIC_URL     # e.g. https://motilal-school-events.onrender.com  (used in certificate QR codes)
+        sync: false

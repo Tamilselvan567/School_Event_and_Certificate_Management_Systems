@@ -1,0 +1,22 @@
+# Never commit real school data, uploads, certificates, backups, logs or secrets
+data/
+uploads/
+certificates/
+backups/
+logs/
+assets/school_logo/*
+assets/signatures/*
+!assets/school_logo/.gitkeep
+!assets/signatures/.gitkeep
+.env
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/_artifacts/
+*.zip
